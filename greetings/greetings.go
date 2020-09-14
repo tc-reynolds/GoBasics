@@ -8,6 +8,12 @@ import (
     "time"
 ) 
 
+// init sets initial values for variables used in the function.
+//rand.Seed uses the provided seed value to initialize the default Source to a deterministic state. If Seed is not called, the generator behaves as if seeded by Seed(1)
+func init() {
+    rand.Seed(time.Now().UnixNano())
+}
+
 // takes a name parameter whose type is string, and returns a string
 func Hello(name string) (string, error) {
     // If no name was given, return an error with a message.
@@ -20,10 +26,23 @@ func Hello(name string) (string, error) {
     return message, nil
 }
 
-// init sets initial values for variables used in the function.
-//rand.Seed uses the provided seed value to initialize the default Source to a deterministic state. If Seed is not called, the generator behaves as if seeded by Seed(1)
-func init() {
-    rand.Seed(time.Now().UnixNano())
+// Hellos returns a map that associates each of the named people
+// with a greeting message.
+func Hellos(names []string) (map[string]string, error) {
+    // A map to associate names with messages.
+    messages := make(map[string]string)
+    // Loop through the received slice of names, calling
+    // the Hello function to get a message for each name.
+    for _, name := range names {
+        message, errMap := Hello(name)
+        if errMap != nil {
+            return nil, errMap
+        }
+        // In the map, associate the retrieved message with 
+        // the name.
+        messages[name] = message
+    }
+    return messages, nil
 }
 
 // randomFormat returns one of a set of greeting messages. The returned
